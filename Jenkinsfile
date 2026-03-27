@@ -23,14 +23,10 @@ stages {
     }
 
     stage('SCA - Trivy Scan') {
-        steps {
-            sh '''
-            docker run --rm aquasec/trivy image \
-            --severity HIGH,CRITICAL \
-            $DOCKER_IMAGE:$TAG
-            '''
-        }
+    steps {
+        sh 'docker run --rm aquasec/trivy image --severity HIGH CRITICAL ganeswara/flask-devsecops:latest'
     }
+}
 
     stage('Docker Login') {
         steps {
