@@ -1,55 +1,71 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
+```
+environment {
+    DOCKER_IMAGE = "ganeswara/flask-devsecops"
+    TAG = "latest"
+}
 
-        stage('Clone Repo') {
-            steps {
-               git 'https://github.com/Ganeswarapadhy/flask-devsecops.git'
-            }
+stages{
+
+    stage('SAST - Bandit') {
+        steps {
+            sh '''
+            pip install bandit
+            bandit -r . -ll
+            '''
         }
+    }
 
-        stage('SAST - Bandit') {
-            steps {
-                sh 'pip install bandit'
-                sh 'bandit -r .'
-            }
+    stage('Build Docker Image') {
+        steps {
+            sh 'docker build -t $DOCKER_IMAGE:$TAG .'
         }
+    }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t flask-devsecops .'
-            }
+    stage('SCA - Trivy Scan') {
+        steps {
+            sh '''
+            docker run --rm aquasec/trivy image \
+            --severity HIGH,CRITICAL \
+            $DOCKER_IMAGE:$TAG
+            '''
         }
+    }
 
-        stage('SCA - Trivy Image Scan') {
-            steps {
-                sh 'docker run --rm aquasec/trivy image flask-devsecops'
-            }
-        }
-
-        stage('Push Image') {
-            steps {
-                sh '''
-                docker tag flask-devsecops ganeswara /flask-devsecops
-                docker push ganeswara/flask-devsecops
-                '''
-            }
-        }
-
-        stage('DAST - OWASP ZAP') {
-            steps {
-                sh '''
-                docker run -t owasp/zap2docker-stable zap-baseline.py \
-                -t http://localhost:5000
-                '''
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh 'kubectl apply -f k8s/'
+    stage('Docker Login') {
+        steps {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                sh 'echo $PASS | docker login -u $USER --password-stdin'
             }
         }
     }
+
+    stage('Push Image') {
+        steps {
+            sh 'docker push $DOCKER_IMAGE:$TAG'
+        }
+    }
+
+    stage('Deploy to Kubernetes') {
+        steps {
+            sh '''
+            kubectl apply -f k8s/
+            kubectl rollout restart deployment flask-devsecops
+            '''
+        }
+    }
+
+    stage('DAST - OWASP ZAP') {
+        steps {
+            sh '''
+            docker run -t owasp/zap2docker-stable zap-baseline.py \
+            -t http://host.docker.internal:30007
+            '''
+        }
+    }
+}
+```
+
 }
