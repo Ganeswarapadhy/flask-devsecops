@@ -43,13 +43,11 @@ stages {
     }
 
     stage('Deploy to Kubernetes') {
-        steps {
-            sh '''
-            kubectl apply -f k8s/
-            kubectl rollout restart deployment flask-devsecops
-            '''
-        }
+    steps {
+        sh 'kubectl apply -f k8s/'
+        sh 'kubectl rollout restart deployment flask-devsecops'
     }
+}
 
     stage('DAST - OWASP ZAP') {
         steps {
