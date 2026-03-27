@@ -1,7 +1,7 @@
 pipeline {
 agent any
 
-
+```
 environment {
     DOCKER_IMAGE = "ganeswara/flask-devsecops"
     TAG = "latest"
@@ -66,6 +66,6 @@ stages {
         }
     }
 }
-
+```
 
 }
