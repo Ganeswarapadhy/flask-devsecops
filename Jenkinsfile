@@ -11,8 +11,12 @@ stages {
 
     stage('SAST - Bandit') {
     steps {
-        sh 'python3 -m pip install --user bandit'
-        sh '~/.local/bin/bandit -r . -ll'
+        sh '''
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install bandit
+        bandit -r .
+        '''
     }
 }
     stage('Build Docker Image') {
