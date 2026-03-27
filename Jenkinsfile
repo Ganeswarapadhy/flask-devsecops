@@ -1,7 +1,7 @@
 pipeline {
 agent any
 
-'''
+
 environment {
     DOCKER_IMAGE = "ganeswara/flask-devsecops"
     TAG = "latest"
@@ -10,11 +10,11 @@ environment {
 stages {
 
     stage('SAST - Bandit') {
-    steps {
-        sh 'pip install bandit'
-        sh 'bandit -r . -ll'
+        steps {
+            sh 'pip install bandit'
+            sh 'bandit -r . -ll'
+        }
     }
-}
 
     stage('Build Docker Image') {
         steps {
@@ -23,10 +23,10 @@ stages {
     }
 
     stage('SCA - Trivy Scan') {
-    steps {
-        sh 'docker run --rm aquasec/trivy image --severity HIGH CRITICAL ganeswara/flask-devsecops:latest'
+        steps {
+            sh 'docker run --rm aquasec/trivy image --severity HIGH CRITICAL $DOCKER_IMAGE:$TAG'
+        }
     }
-}
 
     stage('Docker Login') {
         steps {
@@ -43,18 +43,18 @@ stages {
     }
 
     stage('Deploy to Kubernetes') {
-    steps {
-        sh 'kubectl apply -f k8s/'
-        sh 'kubectl rollout restart deployment flask-devsecops'
+        steps {
+            sh 'kubectl apply -f k8s/'
+            sh 'kubectl rollout restart deployment flask-devsecops'
+        }
+    }
+
+    stage('DAST - OWASP ZAP') {
+        steps {
+            sh 'docker run -t owasp/zap2docker-stable zap-baseline.py -t http://host.docker.internal:30007'
+        }
     }
 }
 
-    stage('DAST - OWASP ZAP') {
-    steps {
-        sh 'docker run -t owasp/zap2docker-stable zap-baseline.py -t http://host.docker.internal:30007'
-    }
-}
-}
-'''
 
 }
