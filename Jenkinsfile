@@ -10,13 +10,11 @@ environment {
 stages {
 
     stage('SAST - Bandit') {
-        steps {
-            sh '''
-            pip install bandit
-            bandit -r . -ll
-            '''
-        }
+    steps {
+        sh 'pip install bandit'
+        sh 'bandit -r . -ll'
     }
+}
 
     stage('Build Docker Image') {
         steps {
