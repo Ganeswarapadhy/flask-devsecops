@@ -5,7 +5,7 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-                git 'https://github.com//flask-devsecops.git'
+               git 'https://github.com/Ganeswarapadhy/flask-devsecops.git'
             }
         }
 
@@ -31,8 +31,8 @@ pipeline {
         stage('Push Image') {
             steps {
                 sh '''
-                docker tag flask-devsecops <dockerhub-username>/flask-devsecops
-                docker push <dockerhub-username>/flask-devsecops
+                docker tag flask-devsecops ganeswara /flask-devsecops
+                docker push ganeswara/flask-devsecops
                 '''
             }
         }
