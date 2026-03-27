@@ -11,13 +11,10 @@ stages {
 
     stage('SAST - Bandit') {
     steps {
-        sh 'apt update'
-        sh 'apt install -y python3-pip'
-        sh 'pip3 install bandit'
-        sh 'bandit -r . -ll'
+        sh 'python3 -m pip install --user bandit'
+        sh '~/.local/bin/bandit -r . -ll'
     }
 }
-
     stage('Build Docker Image') {
         steps {
             sh 'docker build -t $DOCKER_IMAGE:$TAG .'
