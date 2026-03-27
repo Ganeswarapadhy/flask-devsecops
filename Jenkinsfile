@@ -7,7 +7,7 @@ environment {
     TAG = "latest"
 }
 
-stages{
+stages {
 
     stage('SAST - Bandit') {
         steps {
