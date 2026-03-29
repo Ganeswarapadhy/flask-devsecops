@@ -25,7 +25,9 @@ environment {
 
     stage('SCA - Trivy Scan') {
         steps {
-            sh 'docker run --rm aquasec/trivy image --severity HIGH CRITICAL $DOCKER_IMAGE:$TAG'
+        sh '''
+        docker run --rm aquasec/trivy:0.50.1 image --severity HIGH,CRITICAL $DOCKER_IMAGE:$TAG
+        '''
         }
     }
 
