@@ -7,19 +7,16 @@ environment {
     TAG = "latest"
 }
 
-stages {
+    stages {
 
-    stage('SAST - Bandit') {
-        steps {
-            sh '''
-            bandit -r app/
-            
-            
-            
-
-        '''
+            stage('SAST - Bandit') {
+                steps {
+                sh '''
+                bandit -r app/ -ll
+                '''
         }
-  }
+    }
+
     stage('Build Docker Image') {
         steps {
             sh 'docker build -t $DOCKER_IMAGE:$TAG .'
