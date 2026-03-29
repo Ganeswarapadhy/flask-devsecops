@@ -12,7 +12,7 @@ stages {
     stage('SAST - Bandit') {
 steps {
 sh '''
-pip install bandit
+pip install --break-system-packages bandit
 bandit -r .
 '''
 }
