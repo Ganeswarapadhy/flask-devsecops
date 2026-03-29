@@ -10,14 +10,12 @@ environment {
 stages {
 
     stage('SAST - Bandit') {
-    steps {
-        sh '''
-        python3 -m venv venv
-        . venv/bin/activate
-        pip install bandit
-        bandit -r .
-        '''
-    }
+steps {
+sh '''
+pip install bandit
+bandit -r .
+'''
+}
 }
     stage('Build Docker Image') {
         steps {
@@ -61,3 +59,4 @@ stages {
 
 
 }
+ 
