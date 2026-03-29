@@ -12,12 +12,14 @@ stages {
     stage('SAST - Bandit') {
         steps {
             sh '''
-            rm -rf venv
-            pip install --break-system-packages bandit
-            bandit -r .
+            bandit -r app/
+            
+            
+            
+
         '''
-}
-}
+        }
+  }
     stage('Build Docker Image') {
         steps {
             sh 'docker build -t $DOCKER_IMAGE:$TAG .'
