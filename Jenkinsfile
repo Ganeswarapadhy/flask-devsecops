@@ -13,7 +13,7 @@ stages {
             steps {
                 sh '''
                 pip install --break-system-packages bandit
-                bandit -r . -x venv
+                bandit -r . -x venv,tests,__pycache__
                 '''
     }
 }
