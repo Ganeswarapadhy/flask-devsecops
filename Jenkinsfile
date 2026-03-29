@@ -9,13 +9,13 @@ environment {
 
 stages {
 
-    stage('SAST - Bandit') {
-steps {
-sh '''
-pip install --break-system-packages bandit
-bandit -r .
-'''
-}
+        stage('SAST - Bandit') {
+            steps {
+                sh '''
+                pip install --break-system-packages bandit
+                bandit -r . -x venv
+                '''
+    }
 }
     stage('Build Docker Image') {
         steps {
