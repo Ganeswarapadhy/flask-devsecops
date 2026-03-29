@@ -24,10 +24,13 @@ environment {
     }
 
     stage('SCA - Trivy Scan') {
-        steps {
+    steps {
         sh '''
-        docker run --rm aquasec/trivy:0.50.1 image --severity HIGH,CRITICAL $DOCKER_IMAGE:$TAG
-        '''
+            docker run --rm
+            -v trivy-cache:/root/.cache/
+            aquasec/trivy:0.50.1
+            image --severity HIGH,CRITICAL $DOCKER_IMAGE:$TAG
+            '''
         }
     }
 
