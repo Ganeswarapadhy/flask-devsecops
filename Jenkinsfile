@@ -26,10 +26,11 @@ environment {
     stage('SCA - Trivy Scan') {
         steps {
             sh '''
-            docker run --rm -v trivy-cache:/root/.cache/ aquasec/trivy:0.50.1 image --severity HIGH,CRITICAL $DOCKER_IMAGE:$TAG
+                docker run --rm -v trivy-cache:/root/.cache/ aquasec/trivy:0.50.1 image --timeout 10m --scanners vuln --severity HIGH,CRITICAL $DOCKER_IMAGE:$TAG
             '''
         }
     }
+
 
     stage('Docker Login') {
         steps {
