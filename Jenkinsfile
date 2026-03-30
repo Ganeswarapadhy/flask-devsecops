@@ -27,11 +27,10 @@ environment {
 }
 
     stage('SCA - Trivy Scan') {
-        steps {
-            sh '''
-            trivy --download-db-only
-            trivy image ganeswara/flask-devsecops:latest
-            '''
+     steps {
+        retry(3) {
+            sh 'trivy image --timeout 10m ganeswara/flask-devsecops:latest'
+        }
     }
 }
 
