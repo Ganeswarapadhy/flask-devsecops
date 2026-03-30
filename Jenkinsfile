@@ -19,9 +19,12 @@ environment {
 
     stage('Build Docker Image') {
         steps {
-            sh 'docker build -t $DOCKER_IMAGE:$TAG .'
+                sh '''
+                export DOCKER_BUILDKIT=0
+                docker build -t ganeswara/flask-devsecops:latest .
+                '''
         }
-    }
+}
 
     stage('SCA - Trivy Scan') {
         steps {
